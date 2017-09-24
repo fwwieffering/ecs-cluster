@@ -1,0 +1,26 @@
+# bucket lambda code is stored in
+S3Bucket: fww-lambda-archives-us-west-2
+# the name of the ecs cluster
+ClusterName: default
+
+# If environment is provided it will be prepended to all resource names
+# so multiple clusters can be deployed within an account
+Environment: dev
+
+# maximum size the ASG can scale to
+ASGMax: 1
+# minimum size the ASG can scale to
+ASGMin: 1
+# starting size of the ASG
+ASGSize: 1
+# EC2 instance type for ASG
+ASGInstanceType: t2.micro
+
+# Amount of time between `docker stop` and `docker kill` when task is stopped
+TaskStopTimeout: 30s
+
+# If AmiId is provided the AmiId will be used. Otherwise, the latest amazon linux AMI will be used
+AmiId: null
+
+# region to deploy within
+region: us-west-2

@@ -1,0 +1,73 @@
+{
+  "Parameters": {
+    "Environment": {
+      "Type": "String",
+      "Default": ""
+    },
+    "ClusterName": {
+      "Type": "String"
+    },
+    "S3Bucket": {
+      "Type": "String"
+    },
+    "S3Key": {
+      "Type": "String"
+    },
+    "TaskStopTimeout": {
+      "Type": "String",
+      "Default": "30s"
+    },
+    "AmiId": {
+      "Type": "String"
+    },
+    "ASGInstanceType": {
+      "Type": "String"
+    },
+    "ASGMax": {
+      "Type": "String",
+      "Default": "1"
+    },
+    "ASGMin": {
+      "Type": "String",
+      "Default": "1"
+    },
+    "ASGSize": {
+      "Type": "String",
+      "Default": "1"
+    }
+  },
+  "Conditions": {
+    "EnvProvided": {
+      "Fn::Not" : [
+        { "Fn::Equals": [{"Ref": "Environment"}, ""]}
+      ]
+    }
+  },
+  "Resources": {
+    "Cluster": {
+      "Type": "AWS::ECS::Cluster",
+      "Properties": {
+        "ClusterName": {
+          "Fn::If": [ "EnvProvided",
+            {"Fn::Join": ["-", [{"Ref": "Environment"}, {"Ref": "ClusterName"}]]},
+            {"Ref": "ClusterName"}
+          ]
+        }
+      }
+    },
+  	"ClusterSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Attach this Security Group to load balancers. Compute template allows ingress on all ephemeral ports"
+      }
+    }
+  },
+  "Outputs": {
+    "ClusterSecurityGroup": {
+      "Value": { "Fn::GetAtt": ["ClusterSecurityGroup", "GroupId"] },
+      "Export": {
+        "Name": {"Fn::Sub": "${AWS::StackName}:ClusterSecurityGroup"}
+      }
+    }
+  }
+}
